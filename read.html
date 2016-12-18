@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="viewport" content="width=375,maximum-scale=2,user-scalable=no,minimal-ui"/>
+    <meta name="apple-touch-fullscreen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <title></title>
+
+    <style>
+        * { padding: 0; margin: 0;}
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .wrap {
+            height: 100%;
+            background-color: #000;
+            background-position: center center;
+            background-size: 100% 100%;
+        }
+
+        .btn-goPlay {
+        }
+
+        .star {
+            width: 40px;
+            height: 40px;
+            border-radius: 40px;
+            position: absolute;
+            top: 33%;
+            left: 50%;
+            margin-left: -20px;
+            margin-top: -20px;
+            -webkit-transform: scale(0);
+            -webkit-animation-name: janim;
+            -webkit-animation-duration: .3s;
+            -webkit-animation-timing-function: linear;
+            -webkit-animation-direction: normal;
+            -webkit-animation-fill-mode: forwards;
+        }
+
+        .star s {
+            width: 40px;
+            height: 40px;
+            display: block;
+            opacity: 0.2;
+            border-radius: 40px;
+            background-color: #fff;
+            position: absolute;
+        }
+
+        .star b {
+            width: 40px;
+            height: 40px;
+            display: block;
+            border-radius: 40px;
+            position: absolute;
+            background-color: #fff;
+            -webkit-transform: scale(3);
+            opacity: 0.8;
+            -webkit-animation: zdjpop .8s infinite;
+        }
+
+        @-webkit-keyframes janim {
+            0% {
+                -webkit-transform: scale(0.2);
+            }
+
+            50% {
+                -webkit-transform: scale(1.2);
+            }
+
+            100% {
+                -webkit-transform: scale(1);
+            }
+        }
+
+        @-webkit-keyframes zdjpop {
+            0% {
+                opacity: .7;
+                -webkit-transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                -webkit-transform: scale(1.8);
+            }
+        }
+
+        .btn-goPlay img {
+            width: 340px;
+            height: 91px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <a class="btn-goPlay" href="http://sisobrand.com/h5/newyear/" target="_blank">
+        <div class="star">
+            <s></s>
+            <b></b>
+        </div>
+    </a>
+</div>
+
+<script src="assets/scripts/app.js"></script>
+
+<script>
+    window.onload = function () {
+        var app = {
+            server: {
+                init: function () {
+                    var that = this;
+                    console.log("Initializing server...");
+                    this.socket = io.connect('http://120.26.48.94:1246');
+
+                    var imgID = getURLParameter('imgID');
+
+                    if (imgID) {
+                        that.getImage(imgID);
+                    }
+                },
+
+                getImage: function (imgSrc) {
+                    var that = this;
+
+                    //  get image
+                    console.log('get img');
+                    that.socket.emit('getImage', imgSrc);
+
+                    //  when get image, render to page
+                    that.socket.on('returnImage', onReturnImageHandler);
+
+                    function onReturnImageHandler (data) {
+                        var result = data.result;
+
+                        console.log(data, '  ');
+
+                        if (data && result != false) {
+                            console.log(data);
+
+                            var img = document.getElementsByClassName('wrap')[0];
+                            img.style.backgroundImage = 'url(' + result + ')';
+                        } else {
+                            throw new Error('get result fail');
+                        }
+                    }
+                }
+            }
+        };
+
+        app.server.init();
+
+        function getURLParameter(name) {
+            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+        }
+    };
+</script>
+</body>
+</html>

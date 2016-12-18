@@ -1,0 +1,63 @@
+<?php
+require_once "/etc/apache2/Developer/Sisobrand/wxjssdk/jssdk.php";
+$jssdk = new JSSDK("wxb66fe8e6ed2e6e02", "c6702f33202d0b98badf453a5f7a7bfa");
+$signPackage = $jssdk->GetSignPackage();
+?>
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="maximum-dpr=2" name="flexible" />
+    <meta name="apple-touch-fullscreen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <title></title>
+
+    <!-- inject:css -->
+    <link rel="stylesheet" href="assets/stylesheets/app.min.css">
+    <!-- endinject -->
+</head>
+<body>
+<!-- the class "content" is used for flexible plugin -->
+<div class="swiper-container content">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide scene">
+            <img src="assets/images/face.png" class="face" alt=""/>
+            <canvas id="canvas" style="height:100%;background:#e48013;"></canvas>
+            <input type="file" id="take-picture" style="display: none;" accept="image/*">
+
+            <!--发光-->
+            <div class="star">
+                <s></s>
+                <b></b>
+            </div>
+            <!--//发光-->
+            <img src="assets/images/btn.png" class="submit-btn" style="display:none;position: absolute;bottom: 10%;z-index: 99;left: 50%;margin-left: -58px;" alt=""/>
+
+            <!--分享-->
+            <img src="assets/images/fenx.png" alt="" class="share-box" width="100%" style="display:none;position: absolute;z-index: 999;top: 20%;left: 0px" />
+            <div class="share-box" style="display:none;background:#000;opacity:0.6;width: 100%;height: 100%;position: absolute;top: 0px;left: 0px;z-index: 88"></div>
+
+        </div>
+    </div>
+</div>
+
+<audio id="audio" src=""></audio>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<!-- inject:js -->
+<script src="assets/scripts/app.min.js"></script>
+<!-- endinject -->
+<script>
+    // 微信分享设置
+    wx.config({
+        debug: false,
+        appId: '<?php echo $signPackage["appId"];?>',
+        timestamp: '<?php echo $signPackage["timestamp"];?>',
+        nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+        signature: '<?php echo $signPackage["signature"];?>',
+        jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline']
+    });
+</script>
+</body>
+</html>
